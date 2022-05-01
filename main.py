@@ -19,14 +19,17 @@ class Xbox_LFG_Interaction:
             if status_code == 200:
                 for result in range(len(response_data['results'])):
                     post_id = response_data['results'][result]['id']
-                    interaction_status, message = await interaction.Post_Interaction().interact_with_post(session, post_id, self.user_xuid, self.authorization_token)
-                    if interaction_status == 200 and post_id not in self.done:
-                        print(f' \x1b[1;39m[\x1b[1;36m+\x1b[1;39m] Successfully interacted with post [\x1b[1;36m{post_id}\x1b[1;39m] | Message: [\x1b[1;33m{message}\x1b[1;39m] ')
-                        self.done.append(post_id)
-                    elif interaction_status == None:
-                        pass
+                    if post_id not in self.done:
+                        interaction_status, message = await interaction.Post_Interaction().interact_with_post(session, post_id, self.user_xuid, self.authorization_token)
+                        if interaction_status == 200:
+                            print(f' \x1b[1;39m[\x1b[1;36m+\x1b[1;39m] Successfully interacted with post [\x1b[1;36m{post_id}\x1b[1;39m] | Message: [\x1b[1;33m{message}\x1b[1;39m] ')
+                            self.done.append(post_id)
+                        elif interaction_status == None:
+                            pass
+                        else:
+                            print(f' \x1b[1;39m[\x1b[1;31m!\x1b[1;39m] Failed to interact with post [\x1b[1;33m{post_id}\x1b[1;39m]')
                     else:
-                        print(f' \x1b[1;39m[\x1b[1;31m!\x1b[1;39m] Failed to interact with post [\x1b[1;33m{post_id}\x1b[1;39m]')
+                       pass
                     
                     await asyncio.sleep(2.5)
 
