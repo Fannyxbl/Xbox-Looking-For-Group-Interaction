@@ -5,7 +5,7 @@ import json
 class LFG_Post_Collector:
     def __init__(self):
         self.club_ids = [
-            '1820250788', # Fortnite
+            '267695549', # Fortnite
             '1791712750', # Minecraft
             '1628516715', # Apex Legends
             '787008472', # Call of Duty: Modern Warfare
