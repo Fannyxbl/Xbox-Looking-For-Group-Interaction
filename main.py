@@ -11,6 +11,7 @@ class Xbox_LFG_Interaction:
         self.authorization_token = ''
         self.user_xuid = ''
         self.done = []
+        self.filtered_tags = self.collect_tags()
 
     async def interaction_loop(self):
         session = aiohttp.ClientSession()
@@ -19,7 +20,9 @@ class Xbox_LFG_Interaction:
             if status_code == 200:
                 for result in range(len(response_data['results'])):
                     post_id = response_data['results'][result]['id']
-                    if post_id not in self.done:
+                    post_tags = response_data['results'][result]['searchAttributes']['tags']
+
+                    if post_id not in self.done and (await self.check_tags(post_tags) if post_tags is not None else False):
                         interaction_status, message = await interaction.Post_Interaction().interact_with_post(session, post_id, self.user_xuid, self.authorization_token)
                         if interaction_status == 200:
                             print(f' \x1b[1;39m[\x1b[1;36m+\x1b[1;39m] Successfully interacted with post [\x1b[1;36m{post_id}\x1b[1;39m] | Message: [\x1b[1;33m{message}\x1b[1;39m] ')
@@ -29,10 +32,7 @@ class Xbox_LFG_Interaction:
                             print(f' \x1b[1;39m[\x1b[1;31m!\x1b[1;39m] Failed to interact with post [\x1b[1;33m{post_id}\x1b[1;39m]')
                         self.done.append(post_id)
                     else:
-                       pass
-                    
-                    await asyncio.sleep(2.5)
-
+                        pass
             elif status_code == 401:
                 print(' \x1b[1;39m[\x1b[1;31m!\x1b[1;39m] Authorization Token is invalid!')
                 self.authorization_token = getpass.getpass(' \x1b[1;39m[\x1b[1;36m?\x1b[1;39m] Update Authorization Token: ');print('')
@@ -40,8 +40,6 @@ class Xbox_LFG_Interaction:
                 pass
             else:
                 print(' \x1b[1;39m[\x1b[1;31m!\x1b[1;39m] Failed to retrieve recent posts')
-            
-            await asyncio.sleep(2.5)
             
 
     async def startup(self):
@@ -53,6 +51,19 @@ class Xbox_LFG_Interaction:
         session = aiohttp.ClientSession()
         self.user_xuid = await user_info.User_Info().retrieve_user_info(session, self.authorization_token)
         await self.interaction_loop()
+    
+
+    async def check_tags(self, post_tags):
+        for tag in post_tags:
+            if tag.lower().strip().replace(' ', '') in self.filtered_tags:
+                return True
+        return False
+
+
+    @staticmethod
+    def collect_tags():
+        with open('tag_lists/tags.txt', 'r') as tags:
+            return [tag.lower().strip().replace(' ', '') for tag in tags.readlines()]
 
 
 if __name__ == '__main__':
