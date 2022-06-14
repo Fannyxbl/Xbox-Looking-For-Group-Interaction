@@ -36,6 +36,6 @@ class LFG_Post_Collector:
             }
             async with session.post(f'https://sessiondirectory.xboxlive.com/handles/query?include=relatedInfo,roleInfo,activityInfo', headers=headers, json=payload) as recent_posts:
                 return recent_posts.status, json.loads(await recent_posts.read())
-        except Exception as e:
+        except:
             print(f' \x1b[1;39m[\x1b[1;31m!\x1b[1;39m] Failed to retrieve recent posts')
             return None, None
