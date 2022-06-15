@@ -21,8 +21,9 @@ class Xbox_LFG_Interaction:
                 for result in range(len(response_data['results'])):
                     post_id = response_data['results'][result]['id']
                     post_tags = response_data['results'][result]['searchAttributes']['tags']
-
-                    if post_id not in self.done and (await self.check_tags(post_tags) if post_tags is not None else False):
+                    found_tags = await self.check_tags(post_tags)
+                    
+                    if post_id not in self.done and found_tags:
                         interaction_status, message = await interaction.Post_Interaction().interact_with_post(session, post_id, self.user_xuid, self.authorization_token)
                         if interaction_status == 200:
                             print(f' \x1b[1;39m[\x1b[1;36m+\x1b[1;39m] Successfully interacted with post [\x1b[1;36m{post_id}\x1b[1;39m] | Message: [\x1b[1;33m{message}\x1b[1;39m] ')
@@ -54,13 +55,15 @@ class Xbox_LFG_Interaction:
     
 
     async def check_tags(self, post_tags):
-        if len(self.filtered_tags) > 0:
+        if len(post_tags) is not None and len(self.filtered_tags) > 0:
             for tag in post_tags:
                 if tag.lower().strip().replace(' ', '') in self.filtered_tags:
                     return True
             return False
+        elif len(self.filtered_tags) <= 0:
+            return True 
         else:
-            return True
+            return False
 
 
     @staticmethod
