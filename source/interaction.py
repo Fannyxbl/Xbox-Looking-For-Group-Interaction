@@ -44,4 +44,5 @@ class Post_Interaction:
 
     def choose_message(self):
         with open('message_lists/messages.txt', 'r') as messages:
-            return random.choice(messages.readlines()).strip() if len(messages.readlines()) > 0 else 'Message List Empty'
+            messages = [message.strip() for message in messages.readlines()]
+            return (random.choice(messages) if len(messages) > 0 else 'Message List Empty')
