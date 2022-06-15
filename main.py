@@ -55,7 +55,7 @@ class Xbox_LFG_Interaction:
     
 
     async def check_tags(self, post_tags):
-        if len(post_tags) is not None and len(self.filtered_tags) > 0:
+        if post_tags is not None and len(self.filtered_tags) > 0:
             for tag in post_tags:
                 if tag.lower().strip().replace(' ', '') in self.filtered_tags:
                     return True
