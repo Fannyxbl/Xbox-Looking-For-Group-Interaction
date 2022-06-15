@@ -14,7 +14,9 @@ class LFG_Post_Collector:
             '175227487',  # Apex Legends (Xbox)
             '926771636',  # Tom Clancy's Rainbow Six Siege (Xbox)
             '558797228',  # Rocket League (Xbox)
-            '609700427'   # Call of Duty: Modern Warfare (Xbox)
+            '609700427',  # Call of Duty: Modern Warfare (Xbox)
+            '972249091',  # Grand Theft Auto V
+            '1778348973'  # Grand Theft Auto Online
         ]
 
     async def retrieve_posts(self, session: aiohttp.ClientSession, token):
